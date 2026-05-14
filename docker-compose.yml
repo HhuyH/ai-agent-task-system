@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ai-postgres
+
+    environment:
+      POSTGRES_DB: ai_agent_system
+      POSTGRES_USER: huy
+      POSTGRES_PASSWORD: 123
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
