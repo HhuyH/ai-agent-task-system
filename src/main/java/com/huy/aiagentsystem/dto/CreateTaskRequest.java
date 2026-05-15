@@ -1,7 +1,10 @@
 package com.huy.aiagentsystem.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class CreateTaskRequest {
 
+    @NotBlank(message = "Title is required")
     private String title;
 
     public String getTitle() {
