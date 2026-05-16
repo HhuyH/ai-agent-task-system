@@ -1,8 +1,8 @@
 package com.huy.aiagentsystem.controller;
 
-import com.huy.aiagentsystem.dto.AuthResponse;
-import com.huy.aiagentsystem.dto.LoginRequest;
-import com.huy.aiagentsystem.dto.RegisterRequest;
+import com.huy.aiagentsystem.dto.response.AuthResponse;
+import com.huy.aiagentsystem.dto.request.LoginRequest;
+import com.huy.aiagentsystem.dto.request.RegisterRequest;
 import com.huy.aiagentsystem.service.AuthService;
 
 import jakarta.validation.Valid;

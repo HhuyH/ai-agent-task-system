@@ -1,7 +1,10 @@
 package com.huy.aiagentsystem.controller;
 
-import com.huy.aiagentsystem.dto.TaskResponse;
-import com.huy.aiagentsystem.dto.CreateTaskRequest;
+import com.huy.aiagentsystem.dto.request.CreateTaskRequest;
+
+import com.huy.aiagentsystem.dto.request.UpdateTaskRequest;
+import com.huy.aiagentsystem.dto.response.TaskResponse;
+
 import com.huy.aiagentsystem.service.TaskService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.core.Authentication;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -27,14 +31,22 @@ public class TaskController {
 
     // get Tasks from db
     @GetMapping("/tasks")
-    public List<TaskResponse> getTasks() {
-        return taskService.getTasks();
+    public List<TaskResponse> getTasks(Authentication authentication) {
+
+        String email = (String) authentication.getPrincipal();
+
+        return taskService.getTasksByUser(email);
     }
 
     // create/add title to db
     @PostMapping("/tasks")
-    public TaskResponse createTask(@Valid @RequestBody CreateTaskRequest request){
-        return taskService.createTask(request.getTitle());
+    public TaskResponse createTask(
+            @Valid @RequestBody CreateTaskRequest request,
+            Authentication authentication
+    ) {
+        String email = (String) authentication.getPrincipal();
+
+        return taskService.createTask(request, email);
     }
 
     // get title by id
@@ -47,9 +59,9 @@ public class TaskController {
     @PutMapping("/tasks/{id}")
     public TaskResponse updateTask(
             @PathVariable Long id,
-            @Valid @RequestBody CreateTaskRequest request
+            @RequestBody UpdateTaskRequest request
     ) {
-        return taskService.updateTask(id, request.getTitle());
+        return taskService.updateTask(id, request);
     }
 
     // delete title by id
