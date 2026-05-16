@@ -13,7 +13,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.lang.NonNull;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -27,15 +26,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request,
+            @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        System.out.println("=== JWT FILTER RUNNING ===");
-
         String authHeader = request.getHeader("Authorization");
-        System.out.println("Header: " + authHeader);
+
+        String path = request.getServletPath();
+        if (path.startsWith("/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             System.out.println("No Bearer token found");
@@ -67,7 +69,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         } catch (Exception e) {
             System.out.println("JWT ERROR:");
-            e.printStackTrace();
         }
 
         filterChain.doFilter(request, response);

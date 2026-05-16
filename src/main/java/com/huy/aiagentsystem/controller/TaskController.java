@@ -51,22 +51,35 @@ public class TaskController {
 
     // get title by id
     @GetMapping("/tasks/{id}")
-    public TaskResponse getTaskById(@PathVariable Long id) {
-        return taskService.getTaskById(id);
+    public TaskResponse getTaskById(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        String email = (String) authentication.getPrincipal();
+
+        return taskService.getTaskById(id, email);
     }
 
     // update title by id
     @PutMapping("/tasks/{id}")
     public TaskResponse updateTask(
             @PathVariable Long id,
-            @RequestBody UpdateTaskRequest request
+            @RequestBody UpdateTaskRequest request,
+            Authentication authentication
     ) {
-        return taskService.updateTask(id, request);
+        String email = (String) authentication.getPrincipal();
+
+        return taskService.updateTask(id, request, email);
     }
 
     // delete title by id
     @DeleteMapping("/tasks/{id}")
-    public void deleteTask(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    public void deleteTask(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        String email = (String) authentication.getPrincipal();
+
+        taskService.deleteTask(id, email);
     }
 }

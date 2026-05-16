@@ -1,6 +1,7 @@
 package com.huy.aiagentsystem.service;
 
 import com.huy.aiagentsystem.dto.response.AuthResponse;
+import com.huy.aiagentsystem.entity.Role;
 import com.huy.aiagentsystem.entity.User;
 import com.huy.aiagentsystem.repository.UserRepository;
 
@@ -41,7 +42,7 @@ public class AuthService {
 
         user.setEmail(email);
         user.setPassword(hashedPassword);
-        user.setRole("USER");
+        user.setRole(Role.USER);
 
         userRepository.save(user);
 

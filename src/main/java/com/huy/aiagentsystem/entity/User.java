@@ -3,6 +3,7 @@ package com.huy.aiagentsystem.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -19,5 +20,8 @@ public class User {
 
     private String password;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+
 }
