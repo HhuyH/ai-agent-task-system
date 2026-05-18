@@ -1,13 +1,13 @@
 package com.huy.client;
 
 import com.huy.client.api.AuthClient;
+import com.huy.client.api.TaskClient;
+import com.huy.client.model.Task;
+
+import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-        System.out.println("Client started...");
-
-//        String res = AuthClient.login("test@gmail.com", "123456");
-//
-//        System.out.println(res);
+     static void main(String[] args) throws Exception {
+         com.huy.client.ui.App.main(args);
     }
 }

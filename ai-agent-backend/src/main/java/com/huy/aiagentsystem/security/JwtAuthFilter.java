@@ -20,6 +20,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
+    private static final List<String> PUBLIC_APIS = List.of(
+            "/auth/login",
+            "/auth/register"
+    );
+
     public JwtAuthFilter(JwtService jwtService) {
         this.jwtService = jwtService;
     }
@@ -33,8 +38,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        String path = request.getServletPath();
-        if (path.startsWith("/auth")) {
+        String path = request.getRequestURI();
+
+        if (PUBLIC_APIS.stream().anyMatch(path::startsWith)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -68,7 +74,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             System.out.println("Auth set: " + SecurityContextHolder.getContext().getAuthentication());
 
         } catch (Exception e) {
-            System.out.println("JWT ERROR:");
+            System.out.println("JWT ERROR: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);
