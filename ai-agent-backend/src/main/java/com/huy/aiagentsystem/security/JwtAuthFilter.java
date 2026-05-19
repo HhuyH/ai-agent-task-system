@@ -40,7 +40,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (PUBLIC_APIS.stream().anyMatch(path::startsWith)) {
+        if (path.contains("/auth/login") || path.contains("/auth/register")) {
             filterChain.doFilter(request, response);
             return;
         }
