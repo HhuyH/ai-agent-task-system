@@ -20,6 +20,7 @@ jobs:
 
       - name: Build project
         run: mvn clean package -DskipTests
-
+        working-directory: ai-agent-backend
+        
       - name: Trigger Render Deploy
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
