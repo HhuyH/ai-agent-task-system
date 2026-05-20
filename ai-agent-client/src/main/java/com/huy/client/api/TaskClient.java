@@ -4,15 +4,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huy.client.model.Task;
 import com.huy.client.session.SessionManager;
+import static com.huy.client.config.ApiConfig.BASE_URL;
 
 import java.net.URI;
 import java.net.http.*;
 import java.util.List;
-import java.util.Map;
+
 
 public class TaskClient {
 
-    private static final String BASE_URL = "http://localhost:8080";
     private static final HttpClient client = HttpClient.newHttpClient();
 
     // Lấy danh sách task

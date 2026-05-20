@@ -3,6 +3,7 @@ package com.huy.client.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huy.client.session.SessionManager;
+import static com.huy.client.config.ApiConfig.BASE_URL;
 
 import java.net.URI;
 import java.net.http.*;
@@ -10,7 +11,6 @@ import java.util.Map;
 
 public class AuthClient {
 
-    private static final String BASE_URL = "http://localhost:8080";
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final ObjectMapper mapper = new ObjectMapper();
 
