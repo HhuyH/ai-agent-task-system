@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 README_note.md.txt
+.env
