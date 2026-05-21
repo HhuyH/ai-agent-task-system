@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ai-agent-backend
+          image: ai-agent-backend:v2
           imagePullPolicy: Never
 
           ports:
@@ -43,3 +43,26 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: DB_PASSWORD
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
