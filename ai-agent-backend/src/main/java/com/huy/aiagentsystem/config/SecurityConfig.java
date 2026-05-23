@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login", "/auth/login/**").permitAll()
                         .requestMatchers("/auth/register", "/auth/register/**").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

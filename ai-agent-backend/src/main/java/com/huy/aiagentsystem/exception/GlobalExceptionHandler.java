@@ -1,11 +1,11 @@
 package com.huy.aiagentsystem.exception;
 
+import com.huy.aiagentsystem.response.ApiResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,11 +13,11 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationException(
-            MethodArgumentNotValidException ex
-    ) {
+    public ResponseEntity<ApiResponse<Map<String, String>>>
+    handleValidationException(MethodArgumentNotValidException ex) {
+
+        System.out.println("NEW VALIDATION HANDLER");
 
         Map<String, String> errors = new HashMap<>();
 
@@ -30,33 +30,79 @@ public class GlobalExceptionHandler {
                         )
                 );
 
-        return errors;
+        ApiResponse<Map<String, String>> response =
+                new ApiResponse<>(
+                        false,
+                        "Validation failed",
+                        errors
+                );
+
+        return ResponseEntity
+                .badRequest()
+                .body(response);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(TaskNotFoundException.class)
-    public Map<String, String> handleTaskNotFoundException(
-            TaskNotFoundException ex)
-    {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return error;
+    public ResponseEntity<ApiResponse<Object>>
+    handleTaskNotFoundException(TaskNotFoundException ex) {
+
+        ApiResponse<Object> response =
+                new ApiResponse<>(
+                        false,
+                        ex.getMessage(),
+                        null
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
     }
 
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<?> handleAuthException(AuthException ex) {
+    public ResponseEntity<ApiResponse<Object>>
+    handleAuthException(AuthException ex) {
+
+        ApiResponse<Object> response =
+                new ApiResponse<>(
+                        false,
+                        ex.getMessage(),
+                        null
+                );
+
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponse(ex.getMessage()));
+                .body(response);
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<?> handleEmailExists(EmailAlreadyExistsException ex) {
+    public ResponseEntity<ApiResponse<Object>>
+    handleEmailExists(EmailAlreadyExistsException ex) {
+
+        ApiResponse<Object> response =
+                new ApiResponse<>(
+                        false,
+                        ex.getMessage(),
+                        null
+                );
+
         return ResponseEntity
                 .badRequest()
-                .body(ex.getMessage());
+                .body(response);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Object>>
+    handleGeneralException(Exception ex) {
 
+        ApiResponse<Object> response =
+                new ApiResponse<>(
+                        false,
+                        "Internal server error",
+                        null
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
+    }
 }
-

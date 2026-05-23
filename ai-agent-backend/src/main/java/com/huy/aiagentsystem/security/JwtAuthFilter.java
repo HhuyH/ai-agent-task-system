@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.lang.NonNull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,6 +21,8 @@ import java.util.List;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthFilter.class);
 
     private static final List<String> PUBLIC_APIS = List.of(
             "/auth/login",
@@ -35,11 +39,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-
         String authHeader = request.getHeader("Authorization");
-        System.out.println("PATH: " + request.getRequestURI());
-        System.out.println("AUTH HEADER: " + authHeader);
         String path = request.getRequestURI();
+
+        if (!path.contains("/actuator")) {
+            log.info("PATH: {}", path);
+        }
 
         if (
                 path.contains("/auth/login")
@@ -51,17 +56,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("No Bearer token found");
+            log.error("No Bearer token found");
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = authHeader.substring(7);
-        System.out.println("Token: " + token);
+        log.info("Token: {}", token);
 
         try {
             String email = jwtService.extractEmail(token);
-            System.out.println("Email: " + email);
+            log.info("Email: {}", email);
 
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
@@ -76,10 +81,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authToken);
 
-            System.out.println("Auth set: " + SecurityContextHolder.getContext().getAuthentication());
+            log.info("Auth set: {}", SecurityContextHolder.getContext().getAuthentication());
 
         } catch (Exception e) {
-            System.out.println("JWT ERROR: " + e.getMessage());
+            log.error("JWT ERROR: {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);

@@ -3,6 +3,7 @@ package com.huy.aiagentsystem.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.security.Key;
 import java.util.Date;
@@ -10,10 +11,11 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private final String SECRET_KEY = "my_secret_key_test_12345678910111213";
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     private Key getSignKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
 
