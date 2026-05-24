@@ -3,8 +3,10 @@ package com.huy.aiagentsystem.service;
 import com.huy.aiagentsystem.dto.request.CreateTaskRequest;
 import com.huy.aiagentsystem.dto.request.UpdateTaskRequest;
 import com.huy.aiagentsystem.dto.response.TaskResponse;
+import com.huy.aiagentsystem.entity.Role;
 import com.huy.aiagentsystem.entity.Task;
 import com.huy.aiagentsystem.entity.User;
+import com.huy.aiagentsystem.exception.ForbiddenException;
 import com.huy.aiagentsystem.exception.TaskNotFoundException;
 import com.huy.aiagentsystem.repository.TaskRepository;
 import com.huy.aiagentsystem.repository.UserRepository;
@@ -19,17 +21,18 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
 
+
     private void checkPermission(Task task, User currentUser) {
 
-        if (task.getUser().getEmail().equals(currentUser.getEmail())) {
+        if (task.getUser().getId().equals(currentUser.getId())) {
             return;
         }
 
-        if (currentUser.getRole().name().equals("ADMIN")) {
+        if (currentUser.getRole() == Role.ADMIN) {
             return;
         }
 
-        throw new RuntimeException("Forbidden");
+        throw new ForbiddenException();
     }
 
     public TaskService(TaskRepository taskRepository,
