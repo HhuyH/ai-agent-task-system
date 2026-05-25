@@ -46,3 +46,12 @@ jobs:
       - name: Push Docker image
         run: |
           docker push hhuyh/ai-agent-backend:${IMAGE_TAG}
+
+      - name: Save image tag artifact
+        run: echo $IMAGE_TAG > image-tag.txt
+
+      - name: Upload image tag
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-tag
+          path: image-tag.txt
