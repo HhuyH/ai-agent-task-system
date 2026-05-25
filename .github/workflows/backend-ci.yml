@@ -7,6 +7,10 @@ on:
 
 jobs:
   build-and-push:
+
+    env:
+      IMAGE_TAG: ${{ github.sha }}
+
     runs-on: ubuntu-latest
 
     defaults:
@@ -37,8 +41,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t hhuyh/ai-agent-backend:latest .
+          docker build -t hhuyh/ai-agent-backend:${IMAGE_TAG} .
 
       - name: Push Docker image
         run: |
-          docker push hhuyh/ai-agent-backend:latest
+          docker push hhuyh/ai-agent-backend:${IMAGE_TAG}
