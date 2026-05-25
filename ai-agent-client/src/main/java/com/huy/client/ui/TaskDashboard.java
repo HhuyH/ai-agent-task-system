@@ -7,12 +7,21 @@ import javafx.scene.layout.HBox;
 import javafx.scene.control.*;
 import javafx.geometry.Insets;
 import java.util.List;
+import com.huy.client.session.SessionManager;
+import com.huy.client.session.TokenStorage;
+import com.huy.client.exception.UnauthorizedException;
 
 public class TaskDashboard {
+
+    private final Runnable onLogout;
 
     private ListView<Task> taskListView;
     private TextField titleField;
     private Label status;
+
+    public TaskDashboard(Runnable onLogout) {
+        this.onLogout = onLogout;
+    }
 
     public VBox getView() {
         Label titleLabel = new Label("QUẢN LÝ TASK CỦA BẠN");
@@ -34,6 +43,7 @@ public class TaskDashboard {
             }
         });
 
+
         // Ô nhập tên Task (dùng cho cả Thêm và Sửa)
         titleField = new TextField();
         titleField.setPromptText("Nhập tiêu đề task tại đây...");
@@ -49,10 +59,11 @@ public class TaskDashboard {
         Button addBtn = new Button("Add Task");
         Button updateBtn = new Button("Update Task");
         Button deleteBtn = new Button("Delete Task");
+        Button logoutBtn = new Button("Logout");
         status = new Label();
 
         // Xếp các nút nằm ngang
-        HBox actionsBox = new HBox(10, addBtn, updateBtn, deleteBtn);
+        HBox actionsBox = new HBox(10, addBtn, updateBtn, deleteBtn, logoutBtn);
 
         // --- XỬ LÝ SỰ KIỆN CHO CÁC NÚT BẤM ---
 
@@ -112,6 +123,16 @@ public class TaskDashboard {
             }
         });
 
+        // Nút thoát tài khoản
+        logoutBtn.setOnAction(e -> {
+
+            SessionManager.clear();
+
+            TokenStorage.clearToken();
+
+            onLogout.run();
+        });
+
         // Tải dữ liệu lần đầu tiên khi mở màn hình
         refreshTaskList();
 
@@ -130,8 +151,25 @@ public class TaskDashboard {
                 taskListView.getItems().addAll(tasks);
             }
         } catch (Exception ex) {
+
             ex.printStackTrace();
-            showError("Lỗi làm mới danh sách: " + ex.getMessage());
+
+            if (ex instanceof UnauthorizedException) {
+
+                SessionManager.clear();
+
+                TokenStorage.clearToken();
+
+                showError("Phiên đăng nhập đã hết hạn!");
+
+                onLogout.run();
+
+                return;
+            }
+
+            showError(
+                    UiErrorHandler.getMessage(ex)
+            );
         }
     }
 

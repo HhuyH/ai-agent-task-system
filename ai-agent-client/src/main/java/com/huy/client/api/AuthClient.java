@@ -4,14 +4,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huy.client.session.SessionManager;
 import static com.huy.client.config.ApiConfig.BASE_URL;
+import com.huy.client.session.TokenStorage;
 
 import java.net.URI;
 import java.net.http.*;
 import java.util.Map;
+import com.huy.client.api.HttpClientProvider;
 
 public class AuthClient {
 
-    private static final HttpClient client = HttpClient.newHttpClient();
+    private static final HttpClient client = HttpClientProvider.getClient();
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static String login(String email, String password) throws Exception {
@@ -38,6 +40,7 @@ public class AuthClient {
         JsonNode node = mapper.readTree(response.body());
         String token = node.get("token").asText();
         SessionManager.setToken(token);
+        TokenStorage.saveToken(token);
 
         return token;
     }

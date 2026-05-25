@@ -3,6 +3,8 @@ package com.huy.client.ui;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.*;
 import javafx.geometry.Insets;
+import com.huy.client.session.SessionManager;
+import com.huy.client.session.TokenStorage;
 
 public class Login {
     // Thêm 2 callback để báo cho App biết khi nào cần đổi màn hình
@@ -33,8 +35,12 @@ public class Login {
                 // Gọi callback chuyển sang màn hình Task
                 onLoginSuccess.run();
             } catch (Exception ex) {
-                ex.printStackTrace();
-                status.setText("Login failed: " + ex.getMessage());
+
+                status.setStyle("-fx-text-fill: red;");
+
+                status.setText(
+                        UiErrorHandler.getMessage(ex)
+                );
             }
         });
 

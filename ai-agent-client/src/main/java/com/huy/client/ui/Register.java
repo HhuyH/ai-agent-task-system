@@ -42,9 +42,12 @@ public class Register {
                 status.setStyle("-fx-text-fill: green;");
                 status.setText("Đăng ký thành công! Hãy quay lại Login.");
             } catch (Exception ex) {
-                ex.printStackTrace();
+
                 status.setStyle("-fx-text-fill: red;");
-                status.setText("Lỗi: " + ex.getMessage());
+
+                status.setText(
+                        UiErrorHandler.getMessage(ex)
+                );
             }
         });
 

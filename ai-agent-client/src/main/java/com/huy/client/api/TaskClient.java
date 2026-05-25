@@ -9,11 +9,12 @@ import static com.huy.client.config.ApiConfig.BASE_URL;
 import java.net.URI;
 import java.net.http.*;
 import java.util.List;
-
+import com.huy.client.api.ApiExceptionHandler;
+import com.huy.client.api.HttpClientProvider;
 
 public class TaskClient {
 
-    private static final HttpClient client = HttpClient.newHttpClient();
+    private static final HttpClient client = HttpClientProvider.getClient();
 
     // Lấy danh sách task
     public static List<Task> getTasks() throws Exception {
@@ -30,7 +31,10 @@ public class TaskClient {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
-            throw new RuntimeException("Không thể lấy danh sách task: " + response.statusCode());
+
+            throw ApiExceptionHandler.handle(
+                    response.statusCode()
+            );
         }
 
         ObjectMapper mapper = new ObjectMapper();
@@ -54,8 +58,12 @@ public class TaskClient {
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200 && response.statusCode() != 201) {
-            throw new RuntimeException("Không thể tạo task. Mã lỗi: " + response.statusCode());
+        if (response.statusCode() != 200
+                && response.statusCode() != 201) {
+
+            throw ApiExceptionHandler.handle(
+                    response.statusCode()
+            );
         }
     }
 
@@ -73,7 +81,10 @@ public class TaskClient {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
-            throw new RuntimeException("Không thể cập nhật task. Mã lỗi: " + response.statusCode());
+
+            throw ApiExceptionHandler.handle(
+                    response.statusCode()
+            );
         }
     }
 
@@ -86,8 +97,12 @@ public class TaskClient {
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200 && response.statusCode() != 204) {
-            throw new RuntimeException("Không thể xóa task. Mã lỗi: " + response.statusCode());
+        if (response.statusCode() != 200
+                && response.statusCode() != 204) {
+
+            throw ApiExceptionHandler.handle(
+                    response.statusCode()
+            );
         }
     }
 

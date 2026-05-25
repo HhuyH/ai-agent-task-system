@@ -33,3 +33,4 @@ build/
 .vscode/
 README_note.md.txt
 .env
+/ai-agent-client/AI-Agent-Client

@@ -3,15 +3,32 @@ package com.huy.client.ui;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import com.huy.client.session.SessionManager;
+import com.huy.client.session.TokenStorage;
 
 public class App extends Application {
     private Stage primaryStage;
 
     @Override
     public void start(Stage stage) {
+
         this.primaryStage = stage;
-        showLoginScreen();
+
+        String token = TokenStorage.loadToken();
+
+        if (token != null && !token.isBlank()) {
+
+            SessionManager.setToken(token);
+
+            showTaskDashboard();
+
+        } else {
+
+            showLoginScreen();
+        }
+
         stage.setTitle("Task App");
+
         stage.show();
     }
 
@@ -32,7 +49,8 @@ public class App extends Application {
     }
 
     public void showTaskDashboard() {
-        TaskDashboard dashboardView = new TaskDashboard();
+        TaskDashboard dashboardView =
+                new TaskDashboard(this::showLoginScreen);
         Scene scene = new Scene(dashboardView.getView(), 500, 400);
         primaryStage.setScene(scene);
     }
