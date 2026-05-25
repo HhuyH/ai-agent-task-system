@@ -4,10 +4,14 @@ WORKDIR /app
 
 # Copy file cấu hình pom.xml và toàn bộ code vào container
 COPY pom.xml .
+COPY .mvn .mvn
+COPY mvnw .
+RUN chmod +x mvnw
+RUN ./mvnw dependency:go-offline
 COPY src ./src
 
 # Lệnh build api, bỏ qua chạy thử nghiệm (test) để build nhanh hơn
-RUN mvn clean package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
 # Sử dụng Image JRE để chạy api
 FROM eclipse-temurin:21-jre-jammy
