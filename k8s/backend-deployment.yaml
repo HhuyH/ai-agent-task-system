@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ai-agent-backend:latest
-          imagePullPolicy: Never
+          image: hhuyh/ai-agent-backend:latest
+          imagePullPolicy: Always
 
           ports:
             - containerPort: 8080
