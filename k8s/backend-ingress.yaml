@@ -3,9 +3,21 @@ kind: Ingress
 
 metadata:
   name: backend-ingress
+  namespace: default
+
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
 
 spec:
   ingressClassName: nginx
+
+  # tls:
+  #   - hosts:
+  #       - api.local
+
+  #     secretName: api-local-tls
 
   rules:
     - host: api.local
