@@ -9,6 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 
 spec:
   ingressClassName: nginx
@@ -25,8 +26,8 @@ spec:
       http:
         paths:
 
-          - path: /
-            pathType: Prefix
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
 
             backend:
               service:
@@ -34,3 +35,28 @@ spec:
 
                 port:
                   number: 8080
+          
+          - path: /echo(/|$)(.*)
+            pathType: ImplementationSpecific
+
+            backend:
+              service:
+                name: echo-service
+
+                port:
+                  number: 80
+
+    - host: echo.local
+
+      http:
+        paths:
+
+          - path: /
+            pathType: Prefix
+
+            backend:
+              service:
+                name: echo-service
+
+                port:
+                  number: 80
