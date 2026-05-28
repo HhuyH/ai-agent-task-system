@@ -22,4 +22,12 @@ public class HelloController {
 
         return "CPU test done: " + sum;
     }
+
+    @GetMapping("/hello/crash")
+    public String crash() {
+
+        System.exit(1);
+
+        return "boom";
+    }
 }
