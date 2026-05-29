@@ -4,14 +4,14 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 
 metadata:
-  name: backend-hpa
+  name: {{ .Release.Name }}-hpa
   namespace: default
 
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: backend-deployment
+    name: {{ .Release.Name }}-deployment
 
   minReplicas: {{ .Values.hpa.minReplicas }}
   maxReplicas: {{ .Values.hpa.maxReplicas }}
